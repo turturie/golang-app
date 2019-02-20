@@ -31,6 +31,10 @@ spec:
           periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
           successThreshold: {{ .Values.livenessProbe.successThreshold }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+        volumeMounts:
+          - name: config
+            mountPath: /etc/config/
+            readOnly: true
         readinessProbe:
           httpGet:
             path: {{ .Values.probePath }}
@@ -41,3 +45,6 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 12 }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      volumes:
+        - name: config
+          configMap: { name: "{{ template "fullname" . }}-config" }
